@@ -24,6 +24,7 @@ func Run(crds []crd.CRD) {
 	flag.Parse()
 
 	var p *printer
+	var err error
 
 	switch mode {
 	case "clean":
@@ -31,6 +32,7 @@ func Run(crds []crd.CRD) {
 			nodeVisitor:     cleanNodeVisitorInstance,
 			documentVisitor: &cleanDocumentVisitor{},
 		}
+		err = p.run(crds)
 	case "helm":
 		p = &printer{
 			nodeVisitor: helmNodeVisitor,
@@ -38,13 +40,12 @@ func Run(crds []crd.CRD) {
 				chartName: chartName,
 			},
 		}
+		fmt.Println("# START CRD {{- .Values.crds.enabled }}")
+		err = p.run(crds)
+		fmt.Println("# END CRD {{- end }}")
 	default:
 		panic("invalid mode")
 	}
-
-	fmt.Println("# START CRD {{- .Values.crds.enabled }}")
-	err := p.run(crds)
-	fmt.Println("# END CRD {{- end }}")
 
 	if err != nil {
 		logrus.Fatal(err.Error())
