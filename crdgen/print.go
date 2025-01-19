@@ -101,12 +101,13 @@ func (p *printer) cleanMarshall(in any) ([]byte, error) {
 	buf := &bytes.Buffer{}
 	buf.WriteString("---\n")
 
-	bs, err = yaml.Marshal(n)
+	enc := yaml.NewEncoder(buf)
+	enc.SetIndent(2)
+	err = enc.Encode(n)
 
 	if err != nil {
 		return nil, err
 	}
-	buf.Write(bs)
 	return buf.Bytes(), nil
 }
 

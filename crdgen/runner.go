@@ -40,7 +40,7 @@ func Run(crds []crd.CRD) {
 				chartName: chartName,
 			},
 		}
-		fmt.Println("# START CRD {{- .Values.crds.enabled }}")
+		fmt.Println("# START CRD {{- if .Values.crds.enabled }}")
 		err = p.run(crds)
 		fmt.Println("# END CRD {{- end }}")
 	default:
